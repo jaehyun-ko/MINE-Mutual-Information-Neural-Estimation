@@ -11,6 +11,8 @@
 \usepackage{fancyvrb}
 \usepackage{color}
 \usepackage{graphicx}
+\usepackage[ruled,vlined]{algorithm2e}
+
 % \usepackage{amsmath}
 
 % \setfont
@@ -61,9 +63,11 @@
 
 \begin{frame}
 	\frametitle{Cross Entropy}
-	The cross-entropy between two probability distributions p and q over the same underlying set of events
-	measures the average number of bits needed to identify an event drawn from the set if a coding scheme used for the set
-	is optimized for an estimated probability distribution q, rather than the true distribution p.
+	The cross-entropy between two probability distributions $p$ and $q$
+	over the same underlying set of events measures
+	the average number of bits needed to identify an event
+	drawn from the set if a coding scheme used for the set
+	is optimized for an estimated probability distribution $q$, rather than the true distribution $p$.
 	\begin{definition}
 		\textbf{Cross Entropy}(CE) is defined as 
 		\begin{equation*}H(p, q) = \expt_p [-\log q(x)] = \int p(x) \log q(x)dx\end{equation*}
@@ -107,7 +111,7 @@
 	\begin{equation*} I(X;Z) = D(P_{xy}||P_{x} \otimes P_{y}) \end{equation*}
 \end{frame}
 
-\subsection{Donsker-Varadhan Variational Formula}
+\section{Donsker-Varadhan Variational Formula}
 	\begin{frame}
 		\frametitle{Donsker-Varadhan Representation}
 		\begin{theorem}
@@ -126,12 +130,18 @@
 	\end{frame}
 
 	\begin{frame}
-		\frametitle{Existence of supremum in Donsker-Varadhan variational representation}
+		\frametitle{Donsker-Varadhan Representation(cont.)}
+		\framesubtitle{Existence of supremum in Donsker-Varadhan variational representation}
+		There exists a function $T^*: X \rightarrow \mathbb{R}$ such that:
+		\begin{equation*}
+			D_{\text{KL}}(P|Q) = \mathbb{E}_P[T^(X)] - \log\left(\mathbb{E}_Q[e^{T^(X)}]\right)			
+		\end{equation*}
 
 	\end{frame}
 
 	\begin{frame}
-		\frametitle
+		\frametitle{Donsker-Varadhan Representation(cont.)}
+		\framesubtitle{Lower bound for the Kullback Liebler Divergence}
 		
 	\end{frame}
 	% \begin{align*}
@@ -145,6 +155,26 @@
 % \end{frame}
 
 \section{MINE}
+\begin{frame}
+	\begin{algorithm}
+	\SetAlgoLined
+	\KwIn{Joint distribution $P_{XY}$ and neural network architecture}
+	\KwOut{An estimate of the mutual information $I(X;Y)$}
+	Initialize network parameters $\theta$\
+	\Repeat{convergence}{
+	  Draw mini-batch of samples: $(X_1, Y_1), (X_2, Y_2), \ldots, (X_m, Y_m) \sim P_{XY}$\
+	  Draw $m$ samples from the marginal distribution: $Y_{1}, Y_{2}, \ldots, Y_{m} \sim P_Y$\
+	  Evaluate: $\hat{I}_\theta(X; Y) \leftarrow \frac{1}{m} \sum_{i=1}^m T_\theta(X_i, Y_i) - \log\left(\frac{1}{m}\sum_{i=1}^m e^{T_\theta(X_i, \tilde{Y_i})}\right)$\
+	  Update network parameters: $\theta \leftarrow \theta + \nabla_\theta \hat{I}_\theta(X; Y)$\
+	}
+	\Return An estimate of the mutual information $I(X;Y)$\
+	\caption{Mutual Information Neural Estimation (MINE)}
+	\label{alg:mine}
+	\end{algorithm}
+	
+
+	
+\end{frame}
 
 \section{Experiments}
 
