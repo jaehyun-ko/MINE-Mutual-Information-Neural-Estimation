@@ -1,0 +1,163 @@
+\documentclass{beamer}
+
+% select theme
+\usetheme{CambridgeUS}
+\usefonttheme{professionalfonts}
+\usecolortheme{beaver}
+\useinnertheme{rectangles}
+\setbeamertemplate{theorems}[ams style] 
+
+\usepackage{kotex}
+\usepackage{fancyvrb}
+\usepackage{color}
+\usepackage{graphicx}
+% \usepackage{amsmath}
+
+% \setfont
+
+
+\newcommand{\expt}{\mathbb{E}}
+
+
+
+\begin{document}
+
+
+
+% title slide
+\begin{frame}
+	\title{MINE: Mutual Information Neural Estimation}
+	\author{Jaehyun Ko}
+	\date{\today}
+	\titlepage
+\end{frame}
+
+
+% outline slide
+% \section*{Outline}
+\begin{frame}
+\tableofcontents
+\end{frame}
+
+
+
+\section{Introduction}
+
+
+\section{Backgrounds}
+\subsection{Information Theory}
+\begin{frame}
+	\frametitle{Entropy}
+	\textbf{Entropy} is a measure of the uncertainty of a random variable.
+	\begin{definition}
+		\textbf{Entropy} For any probability density fuction p, entropy is defied as
+		\begin{equation*}H(x) = \expt_p [-\log p(x)] - \int {p(x)\log{p(x)}dx}\end{equation*}
+	\end{definition}
+	\begin{itemize}
+		\item \textbf{Entropy} is a measure of the uncertainty of a random variable.
+		\item average bit-length to representate RV \cite{shannon1948mathematical}.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Cross Entropy}
+	The cross-entropy between two probability distributions p and q over the same underlying set of events
+	measures the average number of bits needed to identify an event drawn from the set if a coding scheme used for the set
+	is optimized for an estimated probability distribution q, rather than the true distribution p.
+	\begin{definition}
+		\textbf{Cross Entropy}(CE) is defined as 
+		\begin{equation*}H(p, q) = \expt_p [-\log q(x)] = \int p(x) \log q(x)dx\end{equation*}
+	\end{definition}
+	\end{frame}
+
+\begin{frame}
+	\frametitle{Kullback-Leibler Divergence}
+	\begin{definition}
+		\textbf{Kullback-Leibler Divergence} (KLD) For two probability densities p(x), q(x) is defined as
+		\begin{equation*}D(p(x)||q(x))
+			= \int p(x) \log \frac{p(x)}{q(x)}dx,\end{equation*}
+	\end{definition}
+	it can be interpreted as difference of two entropy.
+	\begin{align*}
+		D(p(x)||q(x)) = \int p(x) (-\log{q(x)})dx - \int p(x) (-\log{p(x)})dx \\
+		= H(p, q) - H(p)
+	\end{align*}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Mutual Information} 
+	MI is a measure of the dependence between two random variables.
+	\begin{definition} \label{def:mutual_information}
+		\textbf{Mutual Information} (MI) Let $X$ and $Y$ be two random variables with a joint
+		distribution $P(x, y)$ and $P_x$, $P_y$ are marginal probability distribution each.
+		The Mutual Information $I(X;Y)$ is defined as
+		\begin{equation*}I(X;Y) = \expt_{P_xy} [\log\frac{P_{xy}}{P_x P_y}]\end{equation*}
+	\end{definition}	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Mutual Information(cont.)}
+	we can rewrite the mutual information as follows.
+	\begin{align*}
+		I(X;Z)&= \expt_P[-\log P_x] - \expt_P[-\log\frac{P_y}{P_{xy}}]\\
+		&= H(X)-H(X|Z)
+	\end{align*}
+	MI between X and Z can be understood as the decrease of the uncertainty in X given Z.
+	and it also representated as KLD between joint distribution and product of marginal distribution.
+	\begin{equation*} I(X;Z) = D(P_{xy}||P_{x} \otimes P_{y}) \end{equation*}
+\end{frame}
+
+\subsection{Donsker-Varadhan Variational Formula}
+	\begin{frame}
+		\frametitle{Donsker-Varadhan Representation}
+		\begin{theorem}
+			Let $X$ be a random variable with domain $\mathcal{X}$, let P, Q be two probability density functions
+			and $T$ be a function on $\mathcal{X}$, 
+			Then, for any $x \in \mathcal{X}$, the KLD admits the following dual Representation
+			\begin{equation*}
+				D(P || Q) = \sup_{T:\mathcal{X} \rightarrow \mathbb{R}} \{ \mathbb{E}_P[T] - \log \mathbb{E}_Q[e^{T}]\}
+			\end{equation*}
+		\end{theorem}
+		the proof of theorem consists of two steps.
+		\begin{itemize}
+			\item \textbf{Step 1} : Existence of supremum in Donsker-Varadhan variational representation
+			\item \textbf{Step 2} : Lower bound for the Kullback Liebler Divergence
+		\end{itemize}	
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Existence of supremum in Donsker-Varadhan variational representation}
+
+	\end{frame}
+
+	\begin{frame}
+		\frametitle
+		
+	\end{frame}
+	% \begin{align*}
+
+	% \end{align*} 
+	
+	% \begin{equation*}
+
+	% \end{equation*}
+
+% \end{frame}
+
+\section{MINE}
+
+\section{Experiments}
+
+\section{Application}
+
+\section{Conclusion}
+
+\section{Refrences}
+\begin{frame}
+	\bibliographystyle{plain} % We choose the "plain" reference style
+	\bibliography{ref.bib} % Entries are in the refs.bib file
+	% \printbibliography 
+\end{frame}
+
+\end{document}
+
