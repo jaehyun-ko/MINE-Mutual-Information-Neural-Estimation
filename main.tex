@@ -12,13 +12,14 @@
 \usepackage{color}
 \usepackage{graphicx}
 \usepackage[ruled,vlined]{algorithm2e}
+\usepackage{hyperref}
 
 % \usepackage{amsmath}
 
 % \setfont
 
 
-\newcommand{\expt}{\mathbb{E}}
+% \newcommand{\mathbb{E}}{\mathbb{E}}
 
 
 
@@ -53,7 +54,7 @@
 	\textbf{Entropy} is a measure of the uncertainty of a random variable.
 	\begin{definition}
 		\textbf{Entropy} For any probability density fuction p, entropy is defied as
-		\begin{equation*}H(x) = \expt_p [-\log p(x)] - \int {p(x)\log{p(x)}dx}\end{equation*}
+		\begin{equation*}H(x) = \mathbb{E}_p [-\log p(x)] - \int {p(x)\log{p(x)}dx}\end{equation*}
 	\end{definition}
 	\begin{itemize}
 		\item \textbf{Entropy} is a measure of the uncertainty of a random variable.
@@ -70,7 +71,7 @@
 	is optimized for an estimated probability distribution $q$, rather than the true distribution $p$.
 	\begin{definition}
 		\textbf{Cross Entropy}(CE) is defined as 
-		\begin{equation*}H(p, q) = \expt_p [-\log q(x)] = \int p(x) \log q(x)dx\end{equation*}
+		\begin{equation*}H(p, q) = \mathbb{E}_p [-\log q(x)] = \int p(x) \log q(x)dx\end{equation*}
 	\end{definition}
 	\end{frame}
 
@@ -95,7 +96,7 @@
 		\textbf{Mutual Information} (MI) Let $X$ and $Y$ be two random variables with a joint
 		distribution $P(x, y)$ and $P_x$, $P_y$ are marginal probability distribution each.
 		The Mutual Information $I(X;Y)$ is defined as
-		\begin{equation*}I(X;Y) = \expt_{P_xy} [\log\frac{P_{xy}}{P_x P_y}]\end{equation*}
+		\begin{equation*}I(X;Y) = \mathbb{E}_{P_xy} [\log\frac{P_{xy}}{P_x P_y}]\end{equation*}
 	\end{definition}	
 \end{frame}
 
@@ -103,23 +104,24 @@
 	\frametitle{Mutual Information(cont.)}
 	we can rewrite the mutual information as follows.
 	\begin{align*}
-		I(X;Z)&= \expt_P[-\log P_x] - \expt_P[-\log\frac{P_y}{P_{xy}}]\\
+		I(X;Z)&= \mathbb{E}_P[-\log P_x] - \mathbb{E}_P[-\log\frac{P_y}{P_{xy}}]\\
 		&= H(X)-H(X|Z)
 	\end{align*}
 	MI between X and Z can be understood as the decrease of the uncertainty in X given Z.
 	and it also representated as KLD between joint distribution and product of marginal distribution.
-	\begin{equation*} I(X;Z) = D(P_{xy}||P_{x} \otimes P_{y}) \end{equation*}
+	\begin{equation}\label{eq:kl_form} I(X;Z) = D(P_{xy}||P_{x} \otimes P_{y}) \end{equation}
 \end{frame}
 
-\section{Donsker-Varadhan Variational Formula}
+\subsection{Donsker-Varadhan Variational Formula}
 	\begin{frame}
 		\frametitle{Donsker-Varadhan Representation}
 		\begin{theorem}
+			\textbf{Donsker-Varadhan Representation} (DV)
 			Let $X$ be a random variable with domain $\mathcal{X}$, let P, Q be two probability density functions
 			and $T$ be a function on $\mathcal{X}$, 
 			Then, for any $x \in \mathcal{X}$, the KLD admits the following dual Representation
 			\begin{equation*}
-				D(P || Q) = \sup_{T:\mathcal{X} arrow \mathbb{R}} \{ \mathbb{E}_P[T] - \log \mathbb{E}_Q[e^{T}]\}
+				D(P || Q) = \sup_{T:\mathcal{X} \rightarrow \mathbb{R}} \{ \mathbb{E}_P[T] - \log \mathbb{E}_Q[e^{T}]\}
 			\end{equation*}
 		\end{theorem}
 		the proof of theorem consists of two steps.
@@ -135,41 +137,51 @@
 		\begin{lemma}
 			There exists a function $T^*: X \rightarrow \mathbb{R}$ such that satisfies the condition of equality.
 		\end{lemma}
-		y
+		choise $T^* = \log\frac{P}{Q}$, then prove in the following page.
+	\end{frame}
+
+
+	\begin{frame}
+		\frametitle{Donsker-Varadhan Representation(cont.)}
+		\framesubtitle{Existence of supremum in Donsker-Varadhan variational representation}
 		\begin{align}
 			D_{\text{KL}}(P|Q) &= \mathbb{E}_P[T^*(X)] - \log(\mathbb{E}_Q[e^{T^*(X)}])\\			
 			% \mathbb{E}_P[T(X)] - \log(\mathbb{E}_Q[e^{T(X)}])
 			&= \mathbb{E}_P [\log \frac{P(X)}{Q(X)}]-\log(\mathbb{E}_Q[e^{\log\frac{P(X)}{Q(X)}}])\\
 			&= D_{\text{KL}}(P|Q) - \log(\mathbb{E}_Q[\frac{P(X)}{Q(X)}])\\
-			&= D_{\text{KL}}(P|Q) - \log(\int_\mathical{X} Q(x)\frac{P(x)}{Q(x)}dx)\\
-			&= D_{\text{KL}}(P|Q) - \log(\int_\mathical{X} P(x)dx)\\
+			&= D_{\text{KL}}(P|Q) - \log(\int_{\mathcal{X}} Q(x)\frac{P(x)}{Q(x)}dx)\\
+			&= D_{\text{KL}}(P|Q) - \log(\int_{\mathcal{X}} P(x)dx)\\
 			&= D_{\text{KL}}(P|Q) - \log(1)\\
 			&= D_{\text{KL}}(P|Q)
 		\end{align}
-
 	\end{frame}
-
-	% \begin{frame}
-	% 	\frametitle{Donsker-Varadhan Representation(cont.)}
-	% 	\framesubtitle{Existence of supremum in Donsker-Varadhan variational representation}
-	% 	we showed that by choose $T^*(x) = \log(\frac{P(X)}{Q(X)})$,
-	% \end{frame}
 
 	\begin{frame}
 		\frametitle{Donsker-Varadhan Representation(cont.)}
 		\framesubtitle{Lower bound for the Kullback Liebler Divergence}
-		\begin{lemma}
+		\begin{lemma}\label{lemma:lower_bound}
 			For any function $T:X \rightarrow \mathbb{R}$ the following inequality holds:
 			$D_{\text{KL}}(P | Q) \geq \sup_{T: \mathcal{X} \rightarrow \mathbb{R}} {\mathbb{E}_P[T(X)] - \log \mathbb{E}_Q[e^{T(X)}]}$
 		\end{lemma}
+		suppose new probability density function $G$ is defined as follows:
 		\begin{align}
 			G(x) &=\frac{Q(x)e^T}{\mathbb{E}_Q[e^{T(X)}]}\\
-			\int_\mathical{x} G(x)dx &= \frac{\frac{\int_\mathical{x} Q(x)e^T}}{\mathbb{E}_Q[e^{T(X)}]} 
-			&=\frac{\mathbb{E}_Q[e^{T(X)}}{\mathbb{E}_Q[e^{T(X)}]} = 1 
+			\int_{\mathcal{X}} G(x)dx = \frac{\int_{\mathcal{X}} Q(x)e^T}{\mathbb{E}_Q[e^{T(X)}]} 
+			&=\frac{\mathbb{E}_Q[e^{T(X)}]}{\mathbb{E}_Q[e^{T(X)}]} = 1 
 		\end{align}
-		% let G(x) \eq
+	\end{frame}
 
-		
+	\begin{frame}
+		\frametitle{Donsker-Varadhan Representation(cont.)}
+		\framesubtitle{Lower bound for the Kullback Liebler Divergence}
+		\begin{align}
+			&D_{\text{KL}}(P | Q) -\sup_{T: \mathcal{X} \rightarrow \mathbb{R}} {\mathbb{E}_P[T(X)] + \log \mathbb{E}_Q[e^{T(X)}]}\\
+			&= \mathbb{E}_P[\log \frac{P(X)}{Q(X)}-T(X)] + \log(\mathbb{E}_Q[e^{T(X)}])\\
+			&= \mathbb{E}_P[\log \frac{P(X)}{Q(X) e^{T(X)}}] - \log(\mathbb{E}_Q[e^{T(X)}])\\
+			&= \mathbb{E}_P[\log \frac{P(X)\mathbb{E}_Q[e^{T(X)}]}{Q(X) e^{T(X)}}]\\
+			&= \mathbb{E}_P[\log \frac{P(X)}{G(X)}]\\
+			&= D_{\text{KL}}(P|G) \geq 0
+		\end{align}
 	\end{frame}
 	% \begin{align*}
 
@@ -182,23 +194,45 @@
 % \end{frame}
 
 \section{MINE}
-% \begin{frame}
-	\begin{algorithm}
-		\SetAlgoLined
-		\KwIn{Joint distribution $P_{XY}$ and neural network architecture}
-		\KwOut{An estimate of the mutual information $I(X;Y)$}
-		Initialize network parameters $\theta$\
-		\Repeat{convergence}{
-		Draw mini-batch of samples: $(X_1, Y_1), (X_2, Y_2), \ldots, (X_m, Y_m) \sim P_{XY}$\
-		Draw $m$ samples from the marginal distribution: $Y_{1}, Y_{2}, \ldots, Y_{m} \sim P_Y$\
-		Evaluate: $\hat{I}_\theta(X; Y) arrow \frac{1}{m} \sum_{i=1}^m T_\theta(X_i, Y_i) - \log(\frac{1}{m}\sum_{i=1}^m e^{T_\theta(X_i, \tilde{Y_i})})$\
-		Update network parameters: $\theta arrow \theta + \nabla_\theta \hat{I}_\theta(X; Y)$\
-		}
-		\Return An estimate of the mutual information $I(X;Y)$\
-		\caption{Mutual Information Neural Estimation (MINE)}
-		\label{alg:mine}
-	\end{algorithm}
-% \end{frame}
+\begin{frame}
+	\frametitle{MINE}
+	\framesubtitle{Mutual Information Neural Estimation}
+	in this section, we will Donsker-Varadhan variational formulation in order to estimate mutual information,
+	via approximating $T$ using neural network. according to discussion so,
+	we can estimate the mutual information by maximizing the following cost function:
+	% \autoref{eq:kl_form} 
+	\begin{equation}
+		I(X;Y) = \sup_{T: \mathcal{X} \times \mathcal{Y} \rightarrow \mathbb{R}} {\mathbb{E}_{P_{XY}}[T(X,Y)] - \log \mathbb{E}_{P_X \otimes P_Y}[e^{T(X,Y)}]}
+	\end{equation}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}
+	\begin{center}
+		\begin{minipage}{0.8\linewidth}
+			% \setframetitle{MINE Algorithm}
+			\begin{algorithm}[H]
+				\SetAlgoLined
+				\KwIn{Joint distribution $P_{XY}$ and neural network architecture}
+				\KwOut{An estimate of the mutual information $I(X;Y)$}
+				Initialize network parameters $\theta$\
+				\Repeat{convergence}{
+				Draw mini-batch of samples: $(X_1, Y_1), (X_2, Y_2), \ldots, (X_m, Y_m) \sim P_{XY}$\;
+				Draw $m$ samples from the marginal distribution: $Y_{1}, Y_{2}, \ldots, Y_{m} \sim P_Y$\;
+				Evaluate: $\hat{I}_\theta(X; Y) \rightarrow \frac{1}{m} \sum_{i=1}^m T_\theta(X_i, Y_i) - \log(\frac{1}{m}\sum_{i=1}^m e^{T_\theta(X_i, \tilde{Y_i})})$\;
+				Update network parameters: $\theta \rightarrow \theta + \nabla_\theta \hat{I}_\theta(X; Y)$\;
+				}
+				\Return An estimate of the mutual information $I(X;Y)$\
+				\caption{Mutual Information Neural Estimation (MINE)}
+				\label{alg:mine}
+			\end{algorithm}
+		\end{minipage}
+	\end{center}
+\end{frame}
 
 \section{Experiments}
 
