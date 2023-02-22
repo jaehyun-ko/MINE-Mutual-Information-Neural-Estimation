@@ -119,7 +119,7 @@
 			and $T$ be a function on $\mathcal{X}$, 
 			Then, for any $x \in \mathcal{X}$, the KLD admits the following dual Representation
 			\begin{equation*}
-				D(P || Q) = \sup_{T:\mathcal{X} \rightarrow \mathbb{R}} \{ \mathbb{E}_P[T] - \log \mathbb{E}_Q[e^{T}]\}
+				D(P || Q) = \sup_{T:\mathcal{X} arrow \mathbb{R}} \{ \mathbb{E}_P[T] - \log \mathbb{E}_Q[e^{T}]\}
 			\end{equation*}
 		\end{theorem}
 		the proof of theorem consists of two steps.
@@ -132,16 +132,43 @@
 	\begin{frame}
 		\frametitle{Donsker-Varadhan Representation(cont.)}
 		\framesubtitle{Existence of supremum in Donsker-Varadhan variational representation}
-		There exists a function $T^*: X \rightarrow \mathbb{R}$ such that:
-		\begin{equation*}
-			D_{\text{KL}}(P|Q) = \mathbb{E}_P[T^(X)] - \log\left(\mathbb{E}_Q[e^{T^(X)}]\right)			
-		\end{equation*}
+		\begin{lemma}
+			There exists a function $T^*: X \rightarrow \mathbb{R}$ such that satisfies the condition of equality.
+		\end{lemma}
+		y
+		\begin{align}
+			D_{\text{KL}}(P|Q) &= \mathbb{E}_P[T^*(X)] - \log(\mathbb{E}_Q[e^{T^*(X)}])\\			
+			% \mathbb{E}_P[T(X)] - \log(\mathbb{E}_Q[e^{T(X)}])
+			&= \mathbb{E}_P [\log \frac{P(X)}{Q(X)}]-\log(\mathbb{E}_Q[e^{\log\frac{P(X)}{Q(X)}}])\\
+			&= D_{\text{KL}}(P|Q) - \log(\mathbb{E}_Q[\frac{P(X)}{Q(X)}])\\
+			&= D_{\text{KL}}(P|Q) - \log(\int_\mathical{X} Q(x)\frac{P(x)}{Q(x)}dx)\\
+			&= D_{\text{KL}}(P|Q) - \log(\int_\mathical{X} P(x)dx)\\
+			&= D_{\text{KL}}(P|Q) - \log(1)\\
+			&= D_{\text{KL}}(P|Q)
+		\end{align}
 
 	\end{frame}
+
+	% \begin{frame}
+	% 	\frametitle{Donsker-Varadhan Representation(cont.)}
+	% 	\framesubtitle{Existence of supremum in Donsker-Varadhan variational representation}
+	% 	we showed that by choose $T^*(x) = \log(\frac{P(X)}{Q(X)})$,
+	% \end{frame}
 
 	\begin{frame}
 		\frametitle{Donsker-Varadhan Representation(cont.)}
 		\framesubtitle{Lower bound for the Kullback Liebler Divergence}
+		\begin{lemma}
+			For any function $T:X \rightarrow \mathbb{R}$ the following inequality holds:
+			$D_{\text{KL}}(P | Q) \geq \sup_{T: \mathcal{X} \rightarrow \mathbb{R}} {\mathbb{E}_P[T(X)] - \log \mathbb{E}_Q[e^{T(X)}]}$
+		\end{lemma}
+		\begin{align}
+			G(x) &=\frac{Q(x)e^T}{\mathbb{E}_Q[e^{T(X)}]}\\
+			\int_\mathical{x} G(x)dx &= \frac{\frac{\int_\mathical{x} Q(x)e^T}}{\mathbb{E}_Q[e^{T(X)}]} 
+			&=\frac{\mathbb{E}_Q[e^{T(X)}}{\mathbb{E}_Q[e^{T(X)}]} = 1 
+		\end{align}
+		% let G(x) \eq
+
 		
 	\end{frame}
 	% \begin{align*}
@@ -155,26 +182,23 @@
 % \end{frame}
 
 \section{MINE}
-\begin{frame}
+% \begin{frame}
 	\begin{algorithm}
-	\SetAlgoLined
-	\KwIn{Joint distribution $P_{XY}$ and neural network architecture}
-	\KwOut{An estimate of the mutual information $I(X;Y)$}
-	Initialize network parameters $\theta$\
-	\Repeat{convergence}{
-	  Draw mini-batch of samples: $(X_1, Y_1), (X_2, Y_2), \ldots, (X_m, Y_m) \sim P_{XY}$\
-	  Draw $m$ samples from the marginal distribution: $Y_{1}, Y_{2}, \ldots, Y_{m} \sim P_Y$\
-	  Evaluate: $\hat{I}_\theta(X; Y) \leftarrow \frac{1}{m} \sum_{i=1}^m T_\theta(X_i, Y_i) - \log\left(\frac{1}{m}\sum_{i=1}^m e^{T_\theta(X_i, \tilde{Y_i})}\right)$\
-	  Update network parameters: $\theta \leftarrow \theta + \nabla_\theta \hat{I}_\theta(X; Y)$\
-	}
-	\Return An estimate of the mutual information $I(X;Y)$\
-	\caption{Mutual Information Neural Estimation (MINE)}
-	\label{alg:mine}
+		\SetAlgoLined
+		\KwIn{Joint distribution $P_{XY}$ and neural network architecture}
+		\KwOut{An estimate of the mutual information $I(X;Y)$}
+		Initialize network parameters $\theta$\
+		\Repeat{convergence}{
+		Draw mini-batch of samples: $(X_1, Y_1), (X_2, Y_2), \ldots, (X_m, Y_m) \sim P_{XY}$\
+		Draw $m$ samples from the marginal distribution: $Y_{1}, Y_{2}, \ldots, Y_{m} \sim P_Y$\
+		Evaluate: $\hat{I}_\theta(X; Y) arrow \frac{1}{m} \sum_{i=1}^m T_\theta(X_i, Y_i) - \log(\frac{1}{m}\sum_{i=1}^m e^{T_\theta(X_i, \tilde{Y_i})})$\
+		Update network parameters: $\theta arrow \theta + \nabla_\theta \hat{I}_\theta(X; Y)$\
+		}
+		\Return An estimate of the mutual information $I(X;Y)$\
+		\caption{Mutual Information Neural Estimation (MINE)}
+		\label{alg:mine}
 	\end{algorithm}
-	
-
-	
-\end{frame}
+% \end{frame}
 
 \section{Experiments}
 

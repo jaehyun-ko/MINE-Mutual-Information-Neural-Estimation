@@ -2,9 +2,9 @@ DOC=main
 
 all:
 	xelatex $(DOC).tex
-	bibtex $(DOC)
-	xelatex $(DOC).tex
-	xelatex $(DOC).tex
+	# bibtex $(DOC)
+	# xelatex $(DOC).tex
+	# xelatex $(DOC).tex
 
 clean:
 	rm -f $(DOC).aux $(DOC).log $(DOC).nav $(DOC).out
