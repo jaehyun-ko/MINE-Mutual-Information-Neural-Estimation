@@ -1,4 +1,4 @@
-\documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
 
 % select theme
 \usetheme{CambridgeUS}
@@ -30,7 +30,7 @@
 % title slide
 \begin{frame}
 	\title{MINE: Mutual Information Neural Estimation}
-	\subtitle{ICML 2018, Ishmael Belghazi et al}
+	\subtitle{ICML 2018}
 	\author{Jaehyun Ko}
 	\date{\today}
 	\titlepage
@@ -38,7 +38,7 @@
 
 
 % outline slide
-% \section*{Outline}
+\section*{Outline}
 \begin{frame}
 \tableofcontents
 \end{frame}
@@ -47,7 +47,25 @@
 
 \section{Introduction}
 \begin{frame}
-	
+	\frametitle{Introduction}
+	\textbf{Motivation} \\ Estimate mutual information between two random variables using neural networks. \\
+\end{frame}
+
+\begin{frame}
+	\textbf{Toy Data} \\ Two gaussian distribution
+	\begin{align*}
+		X &\sim \mathcal{N}(0,
+		\begin{bmatrix}
+			1 & 0 \\
+			0 & 1
+		\end{bmatrix})\\
+		Y &\sim \mathcal{N}(0, 
+		\begin{bmatrix}
+			1 & 0.5 \\
+			0.5 & 1
+		\end{bmatrix})
+	\end{align*}
+	We can calculate mutual information of these two random variables as follows.
 \end{frame}
 
 \section{Backgrounds}
@@ -99,7 +117,7 @@
 		\textbf{Mutual Information} (MI) Let $X$ and $Y$ be two random variables with a joint
 		distribution $P(x, y)$ and $P_x$, $P_y$ are marginal probability distribution each.
 		The Mutual Information $I(X;Y)$ is defined as
-		\begin{equation*}I(X;Y) = \mathbb{E}_{P_xy} [\log\frac{P_{xy}}{P_x P_y}]\end{equation*}
+		\begin{equation*}I(X;Y) = \mathbb{E}_{P_{xy}} [\log\frac{P_{xy}}{P_x P_y}]\end{equation*}
 	\end{definition}	
 \end{frame}
 
@@ -205,7 +223,8 @@
 	we can estimate the mutual information by maximizing the following cost function:
 	% \autoref{eq:kl_form} 
 	\begin{equation}
-		I(X;Y) = \sup_{T: \mathcal{X} \times \mathcal{Y} \rightarrow \mathbb{R}} {\mathbb{E}_{P_{XY}}[T(X,Y)] - \log \mathbb{E}_{P_X \otimes P_Y}[e^{T(X,Y)}]}
+		I(X;Y) = \sup_{T: \mathcal{X} \times \mathcal{Y} \rightarrow \mathbb{R}}
+		{\mathbb{E}_{P_{XY}}[T(X,Y)] - \log \mathbb{E}_{P_X \otimes P_Y}[e^{T(X,Y)}]}
 	\end{equation}
 \end{frame}
 
@@ -225,8 +244,8 @@
 				Initialize network parameters $\theta$\
 				\Repeat{convergence}{
 				Draw mini-batch of samples: $(X_1, Y_1), (X_2, Y_2), \ldots, (X_m, Y_m) \sim P_{XY}$\;
-				Draw $m$ samples from the marginal distribution: $Y_{1}, Y_{2}, \ldots, Y_{m} \sim P_Y$\;
-				Evaluate: $\hat{I}_\theta(X; Y) \rightarrow \frac{1}{m} \sum_{i=1}^m T_\theta(X_i, Y_i) - \log(\frac{1}{m}\sum_{i=1}^m e^{T_\theta(X_i, \tilde{Y_i})})$\;
+				Draw $n$ samples from the marginal distribution: $Y_{1}, Y_{2}, \ldots, Y_{n} \sim P_Y$\;
+				Evaluate: $\hat{I}_\theta(X; Y) \rightarrow \frac{1}{n} \sum_{i=1}^n T_\theta(X_i, Y_i) - \log(\frac{1}{n}\sum_{i=1}^n e^{T_\theta(X_i, \tilde{Y_i})})$\;
 				Update network parameters: $\theta \rightarrow \theta + \nabla_\theta \hat{I}_\theta(X; Y)$\;
 				}
 				\Return An estimate of the mutual information $I(X;Y)$\
