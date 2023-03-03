@@ -13,6 +13,15 @@
 \usepackage{graphicx}
 \usepackage[ruled,vlined]{algorithm2e}
 \usepackage{hyperref}
+\usepackage{minted}
+
+% \newminted{python}{fontsize=\scriptsize, 
+% 		   linenos,
+% 		   numbersep=8pt,
+% 		   gobble=4,
+% 		   frame=lines,
+% 		   bgcolor=bg,
+% 		   framesep=3mm} 
 
 % \usepackage{amsmath}
 
@@ -25,6 +34,16 @@
 
 \begin{document}
 
+% \definecolor{bg}{rgb}{0.95,0.95,0.95}
+% \defverbatim[colored]\toydata{
+% \begin{pythoncode}
+% 	p_y_x=np.exp(-(y-x)**2/(2*var))
+% 	p_y_x_minus=np.exp(-(y+1)**2/(2*var))
+% 	p_y_x_plus=np.exp(-(y-1)**2/(2*var))
+% 	mi=np.average(np.log(p_y_x/(0.5*p_y_x_minus+0.5*p_y_x_plus)))
+% 	mi # 0.6586568587377033
+% \end{pythoncode}
+% }
 
 
 % title slide
@@ -74,20 +93,7 @@
 % 	\end{figure}
 % \end{frame}
 
-\begin{frame}
-	\frametitle{Toy data}
-	Two distribution
-	\begin{align*}
-		X &\sim \text{sgn}(\mathcal{N}(0,1)) \\
-		Y &\sim X+\mathcal{N}(0, 0.2)
-	\end{align*}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.5\textwidth]{./images/toy_data.png}
-		\caption{Toy data}
-		\label{fig:toy_data}
-	\end{figure}
-\end{frame}
+
 
 \section{Backgrounds}
 \subsection{Information Theory}
@@ -96,7 +102,7 @@
 	\textbf{Entropy} is a measure of the uncertainty of a random variable.
 	\begin{definition}
 		\textbf{Entropy} For any probability density fuction p, entropy is defied as
-		\begin{equation*}H(x) = \mathbb{E}_p [-\log p(x)] - \int {p(x)\log{p(x)}dx}\end{equation*}
+		\begin{equation*}H(x) = \mathbb{E}_p [-\log p(x)] = - \int {p(x)\log{p(x)}dx}\end{equation*}
 	\end{definition}
 	\begin{itemize}
 		\item \textbf{Entropy} is a measure of the uncertainty of a random variable.
@@ -113,7 +119,7 @@
 	is optimized for an estimated probability distribution $q$, rather than the true distribution $p$.
 	\begin{definition}
 		\textbf{Cross Entropy}(CE) is defined as 
-		\begin{equation*}H(p, q) = \mathbb{E}_p [-\log q(x)] = \int p(x) \log q(x)dx\end{equation*}
+		\begin{equation*}H(p, q) = \mathbb{E}_p [-\log q(x)] = - \int p(x) \log q(x)dx\end{equation*}
 	\end{definition}
 	\end{frame}
 
@@ -243,33 +249,72 @@
 	via approximating $T$ using neural network. according to discussion so,
 	we can estimate the mutual information by maximizing the following cost function:
 	% \autoref{eq:kl_form} 
-	\begin{equation}
+	\begin{equation}\label{eq:mine}
 		I(X;Y) = \sup_{T: \mathcal{X} \times \mathcal{Y} \rightarrow \mathbb{R}}
 		{\mathbb{E}_{P_{XY}}[T(X,Y)] - \log \mathbb{E}_{P_X \otimes P_Y}[e^{T(X,Y)}]}
 	\end{equation}
 \end{frame}
 
+\begin{frame}
+	\frametitle{MINE(cont.)}
+	\framesubtitle{Estimation of each term of MINE}
+	In order to estimate each term of MINE (\autoref{eq:mine}),
+	\begin{enumerate}
+		\item we need to the full knowlage of the joint and marginal distribution of $X$ and $Y$.
+		\item we need to find maximization of $T(X,Y)$ over all possible functions, $T \in \mathcal{F}$.
+	\end{enumerate}
+\end{frame}
 
+\begin{frame}
+	\frametitle{MINE(cont.)}
+	\framesubtitle{Estimation of each term of MINE}
+	In assume that we have a sample of $n$ independent and identically distributed samples from $P_{XY}$. \\
+	then, we can use the law of large numbers to obtain following approximation of the first expectation:
+	\begin{equation} \label{eq:mine_first_term}
+		\mathbb{E}_{P_{XY}}[T(X,Y)] \approx \frac{1}{n} \sum_{i=1}^n T(X_i, Y_i)
+	\end{equation}	
+\end{frame}
 
+\begin{frame}
+	\frametitle{MINE(cont.)}
+	\framesubtitle{Estimation of each term of MINE}
+	To obtain an approximation of the second expectation, we cannot use the law of large numbers,
+	because the expectation is over the product of two random variables.\\
+	We can use some tricks: suffling. artificially construct a tuple set $(X_i, \tilde{Y_i})$,
+	where $\tilde{Y_i}$ is a randomly sampled from $(Y_i)^n_{i=1}$.\\
+	Then, we can use the law of large numbers to obtain following approximation of the second expectation:
+	\begin{equation}\label{eq:mine_second_term}
+		\mathbb{E}_{P_X \otimes P_Y}[e^{T(X,Y)}] \approx \frac{1}{n} \sum_{i=1}^n T(X_i, \tilde{Y_i})
+	\end{equation}	
+\end{frame}
 
-
+\begin{frame}
+	\frametitle{MINE(cont.)}
+	\framesubtitle{Estimation of each term of MINE}
+	Now, we can estimate the mutual information by maximizing the following cost function:
+	\begin{equation}\label{eq:mine_cost}
+		\hat{I}(X;Y) = \sup_{T: \mathcal{X} \times \mathcal{Y} \rightarrow \mathbb{R}}
+			{\frac{1}{n} \sum_{i=1}^n T(X_i, Y_i) - \log \frac{1}{n} \sum_{i=1}^n T(X_i, \tilde{Y_i})}
+	\end{equation}
+\end{frame}
 
 \begin{frame}
 	\begin{center}
 		\begin{minipage}{0.8\linewidth}
 			% \setframetitle{MINE Algorithm}
 			\begin{algorithm}[H]
+				\DontPrintSemicolon
 				\SetAlgoLined
 				\KwIn{Joint distribution $P_{XY}$ and neural network architecture}
 				\KwOut{An estimate of the mutual information $I(X;Y)$}
 				Initialize network parameters $\theta$\
 				\Repeat{convergence}{
-				Draw mini-batch of samples: $(X_1, Y_1), (X_2, Y_2), \ldots, (X_m, Y_m) \sim P_{XY}$\;
-				Draw $n$ samples from the marginal distribution: $Y_{1}, Y_{2}, \ldots, Y_{n} \sim P_Y$\;
+				Draw mini-batch of samples: $(X_1, Y_1), (X_2, Y_2), \ldots, (X_n, Y_n) \sim P_{XY}$\;
+				Draw $n$ samples from the marginal distribution: $\tilde{Y_{1}}, \tilde{Y_{2}}, \ldots, \tilde{Y_{n}} \sim P_Y$\;
 				Evaluate: $\hat{I}_\theta(X; Y) \rightarrow \frac{1}{n} \sum_{i=1}^n T_\theta(X_i, Y_i) - \log(\frac{1}{n}\sum_{i=1}^n e^{T_\theta(X_i, \tilde{Y_i})})$\;
 				Update network parameters: $\theta \rightarrow \theta + \nabla_\theta \hat{I}_\theta(X; Y)$\;
 				}
-				\Return An estimate of the mutual information $I(X;Y)$\
+				\Return An estimate of the mutual information $I_{\theta}(X;Y)$\
 				\caption{Mutual Information Neural Estimation (MINE)}
 				\label{alg:mine}
 			\end{algorithm}
@@ -277,7 +322,50 @@
 	\end{center}
 \end{frame}
 
-% \section{Experiments}
+\section{Theoretical Properties}
+\begin{frame}
+	\frametitle{Strong Consistency}
+	\framesubtitle{Proof of Approxiation of MINE}
+	\begin{definition}
+		\label{def:strong_consistency}
+		The estimater $\hat{I}_\theta(X;Y)$ is said to be strongly consistent if: \\
+		for all $\epsilon > 0$, there exists a positive integer $N$ and a choice of statistics network such that: \\
+		\begin{equation}
+			\forall n \geq N, | I(X;Y) - \widehat{I_\theta(X;Y)}_n | \leq \epsilon
+		\end{equation}
+		where the probability is over a set of samples.
+	\end{definition}
+\end{frame}
+
+\section{Experiments}
+\begin{frame}
+	\frametitle{Toy data}
+	Two distribution
+	\begin{align*}
+		X &\sim \text{sgn}(\mathcal{N}(0,1)) \\
+		Y &\sim X+\mathcal{N}(0, 0.2)
+	\end{align*}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{./images/toy_data.png}
+		\caption{Toy data}
+		\label{fig:toy_data}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Toy data}
+	compute mutual information of two distribution directly
+	\begin{align*}
+		I(X;Y)	&\approx \frac{1}{n} \sum_{i=1}^n \frac{\log{P_{X,Y}(x_i, y_i)}}{\log{P_X(x_i)}{P_Y(y_i)}} \\
+		& = \frac{1}{n} \sum_{i=1}^n \log{\frac{{P_{Y|X}(y_i|x_i)}}{{P_{Y|X}(y_i|X)}{P_X(X)}}} \\
+		& = \frac{1}{n} \sum_{i=1}^n \log{\frac{{P_{Y|X}(y_i|x_i)}}{{0.5 P_{Y|X}(y_i|X = -1)} + {0.5 P_{Y|X}(y_i|X = 1)}}}
+	\end{align*}
+\end{frame}
+
+\begin{frame}
+	\toydata
+\end{frame}
 
 % \section{Application}
 
