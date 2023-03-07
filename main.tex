@@ -27,7 +27,7 @@
 
 % \setfont
 
-
+% 한영키를 어떻게 키바인딩 할것이냐.
 % \newcommand{\mathbb{E}}{\mathbb{E}}
 
 
@@ -48,7 +48,7 @@
 
 % title slide
 \begin{frame}
-	\title{MINE: Mutual Information Neural Estimation}
+	\title{MINE: Mutual Information Neural Estimation \cite{mine}}
 	\subtitle{ICML 2018}
 	\author{Jaehyun Ko}
 	\date{\today}
@@ -339,7 +339,8 @@
 
 \section{Experiments}
 \begin{frame}
-	\frametitle{Toy data}
+	\frametitle{Experiment 1}
+	\framesubtitle{Toy data}
 	Two distribution
 	\begin{align*}
 		X &\sim \text{sgn}(\mathcal{N}(0,1)) \\
@@ -354,18 +355,60 @@
 \end{frame}
 
 \begin{frame}
-	\frametitle{Toy data}
+	\frametitle{Experiment 1}
+	\framesubtitle{Toy data}
 	compute mutual information of two distribution directly
 	\begin{align*}
 		I(X;Y)	&\approx \frac{1}{n} \sum_{i=1}^n \frac{\log{P_{X,Y}(x_i, y_i)}}{\log{P_X(x_i)}{P_Y(y_i)}} \\
 		& = \frac{1}{n} \sum_{i=1}^n \log{\frac{{P_{Y|X}(y_i|x_i)}}{{P_{Y|X}(y_i|X)}{P_X(X)}}} \\
-		& = \frac{1}{n} \sum_{i=1}^n \log{\frac{{P_{Y|X}(y_i|x_i)}}{{0.5 P_{Y|X}(y_i|X = -1)} + {0.5 P_{Y|X}(y_i|X = 1)}}}
+		& = \frac{1}{n} \sum_{i=1}^n \log{\frac{{P_{Y|X}(y_i|x_i)}}{{0.5 P_{Y|X}(y_i|X = -1)} + {0.5 P_{Y|X}(y_i|X = 1)}}} \\
+		&\approx 0.65865
 	\end{align*}
 \end{frame}
 
 \begin{frame}
-	\toydata
+	\frametitle{Experiment 1}
+	\framesubtitle{Toy data}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{./images/mine_implementation.png}
+		\caption{MINE implementation}
+		\label{fig:mine_implementation}
+	\end{figure}
 \end{frame}
+
+\begin{frame}
+	\frametitle{Experiment 1}
+	\framesubtitle{Toy data}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.4\textwidth]{./images/toy_data_mine.png}
+		\caption{MINE result of toy data}
+		\label{fig:mine_result_toy}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Experiment 2}
+	\framesubtitle{Two Gaussian with different correlation}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.4\textwidth]{./images/gaussian.png}
+		\caption{MINE result of gaussian}
+		\label{fig:mine_result_gaussian}
+	\end{figure}
+\end{frame}
+
+% \begin{frame}
+% 	\frametitle{Experiment 2}
+% 	\framesubtitle{Two Gaussian with different correlation}
+% 	\begin{figure}
+% 		\centering
+% 		\includegraphics[width=0.4\textwidth]{./images/gaussian.png}
+% 		\caption{MINE result of gaussian}
+% 		\label{fig:mine_result_gaussian}
+% 	\end{figure}
+% \end{frame}
 
 % \section{Application}
 
